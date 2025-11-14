@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    environment {
+        def imgname = ("${env.JOB_NAME}-${env.BUILD_ID}")
+    }
+    stages {
+        stage('Build') {
+            steps {
+	            script {
+                    dockerimage = docker.build("${img}")
+                }
+                echo "build number"
+            }
+        }
+     stage('Test') {
+           steps {
+	            echo " Tests"
+	            echo "get the ${env.NODE_NAME}"
+          }
+        }
+	stage("deploy") {
+            steps{
+	            echo "deploy"
+	            echo "currentBuild.currentResult"
+            }
+        }
+    }
+}
