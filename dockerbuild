@@ -1,33 +1,38 @@
 pipeline {
     agent any
+
     environment {
-        def imgname = ("${env.JOB_NAME}-${env.BUILD_ID}")
+        IMG = "${env.JOB_NAME}-${env.BUILD_ID}"
     }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: https://github.com/Boobalan1994/basicpipeline.git'
+                git branch: 'main', url: 'https://github.com/Boobalan1994/basicpipeline.git'
                 sh 'ls -la'
             }
         }
+
         stage('Build') {
             steps {
-	            script {
-                    dockerimage = docker.build("${img}")
+                script {
+                    dockerimage = docker.build("${IMG}")
                 }
-                echo "build number"
+                echo "Docker image built: ${IMG}"
             }
         }
-     stage('Test') {
-           steps {
-	            echo " Tests"
-	            echo "get the ${env.NODE_NAME}"
-          }
+
+        stage('Test') {
+            steps {
+                echo "Running Tests..."
+                echo "Agent Node: ${env.NODE_NAME}"
+            }
         }
-	stage("deploy") {
-            steps{
-	            echo "deploy"
-	            echo "currentBuild.currentResult"
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying..."
+                echo "Build result: ${currentBuild.currentResult}"
             }
         }
     }
